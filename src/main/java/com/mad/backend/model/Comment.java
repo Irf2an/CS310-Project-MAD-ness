@@ -23,14 +23,13 @@ public class Comment{
     public Comment() {
 	}
 	
-	public Comment(String title, String content, int ratings, User user, Museum museum, LocalDateTime date) {
+	public Comment(String title, String content, int ratings, User user, Museum museum) {
 		super();
 		this.title = title;
 		this.content = content;
 		this.ratings = ratings;
 		this.user = user;
 		this.museum = museum;
-		this.date = date;
 	}
 
     public String getId() {
