@@ -5,8 +5,6 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,7 +24,7 @@ import com.mad.backend.repo.UserRepository;
 import com.mad.backend.repo.MuseumRepository;
 
 @RestController
-// @RequestMapping("/comment") --- [TBD]
+@RequestMapping("/comments")
 public class CommentController {
 	@Autowired
 	private CommentRepository commentRepository;
@@ -35,12 +33,30 @@ public class CommentController {
     @Autowired
 	private MuseumRepository museumRepository;
 
-    @GetMapping("/comments")
+    // @PostConstruct
+	// public void init() {
+
+	// 	if (commentRepository.count() == 0) {
+	// 		System.out.println("Database is empty, initializing..");
+	// 		Musuem m1 = new Musuem("...");
+	// 		museumRepository.save(m1);
+
+	// 		User u1 = new User("...");
+	// 		userRepository.save(u1);
+
+	// 		Comment c1 = new Comment("..", m1, u1);
+	// 		commentRepository.save(c1);
+
+	// 		logger.info("Comment sample data is saved!");
+	// 	}
+	// }
+
+    @GetMapping("/allComments")
 	public List<Comment> getAllComments() {
 		return commentRepository.findAll();
 	}
 
-    @GetMapping("/comments/{museumId}")
+    @GetMapping("/{museumId}")
 	public List<Comment> getAllCommentsByMuseum(@PathVariable("museumId") String id) {
         Museum foundMuseum = museumRepository.findById(id).get();
 		List<Comment> museumCommentList = commentRepository.findByMuseum(foundMuseum);
@@ -48,14 +64,14 @@ public class CommentController {
 		return museumCommentList;
 	}
 
-    @GetMapping("/comments/{ratings}")
+    @GetMapping("/{ratings}")
 	public List<Comment> searchByRatings(@PathVariable("ratings") int ratings) {
 		List<Comment> commentByRatingsList = commentRepository.findByRatings(ratings);
 
 		return commentByRatingsList;
 	}
 
-	@PostMapping("/comments/save")
+	@PostMapping("/save")
 	public Comment saveComment(@RequestBody Comment newComment) {         // --- [TBD]
 
         // ------- if wanna add a payload request class:
@@ -80,7 +96,7 @@ public class CommentController {
 		return commentSaved;
 	}
 
-    @PutMapping("/comments/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<String> updateComment(@PathVariable String id, @RequestBody Book updatedComment) {
         if (!commentRepository.findById(id)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Comment not found");
@@ -92,15 +108,15 @@ public class CommentController {
         return ResponseEntity.ok("Comment updated successfully");
     }
 
-    @DeleteMapping("/comments//{id}")
-    public ResponseEntity<String> deleteBook(@PathVariable String id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteComment(@PathVariable String id) {
         if (!commentRepository.findById(id)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Comment not found");
         }
 
         commentRepository.deleteById(id);
 
-        return ResponseEntity.ok("Book deleted successfully");
+        return ResponseEntity.ok("Comment deleted successfully");
     }
 
 }
