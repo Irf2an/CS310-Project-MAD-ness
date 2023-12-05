@@ -43,9 +43,9 @@ public class MuseumController {
     }
 
     @GetMapping("/{address}")
-    public List<Museum> getAllMuseumsBycity(Address address) {
+    public List<Museum> getAllMuseumsByAddress(Address address) {
 
-        List<Museum> museums = museumRepository.findByCity(address.getCity());
+        List<Museum> museums = museumRepository.findByAddress(address);
         return museums;
     }
 

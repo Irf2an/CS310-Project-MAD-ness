@@ -6,5 +6,5 @@ import com.mad.backend.model.*;
 
 public interface MuseumRepository extends MongoRepository<Museum, String> {
     public List<Museum> findByName(String name);
-    public List<Museum> findByCity(String city);
+    public List<Museum> findByAddress(Address address);
 }
