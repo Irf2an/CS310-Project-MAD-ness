@@ -14,8 +14,8 @@ public class Comment {
 	private String title;
 	private String content;
 	private int ratings;
-	@DBRef
-	private User user;
+	//@DBRef
+	//private User user;
 	@DBRef
 	private Museum museum;
 	private LocalDateTime date;
@@ -23,14 +23,14 @@ public class Comment {
 	public Comment() {
 	}
 
-	public Comment(String title, String content, int ratings, User user, Museum museum) {
-		super();
-		this.title = title;
-		this.content = content;
-		this.ratings = ratings;
-		this.user = user;
-		this.museum = museum;
-	}
+	// public Comment(String title, String content, int ratings, User user, Museum museum) {
+	// 	super();
+	// 	this.title = title;
+	// 	this.content = content;
+	// 	this.ratings = ratings;
+	// 	this.user = user;
+	// 	this.museum = museum;
+	// }
 
 	public String getId() {
 		return id;
@@ -64,13 +64,13 @@ public class Comment {
 		this.ratings = ratings;
 	}
 
-	public User getUser() {
-		return user;
-	}
+	// public User getUser() {
+	// 	return user;
+	// }
 
-	public void setUser(User user) {
-		this.user = user;
-	}
+	// public void setUser(User user) {
+	// 	this.user = user;
+	// }
 
 	public Museum getMuseum() {
 		return museum;
@@ -89,12 +89,12 @@ public class Comment {
 	}
 
 	// ------- might need to make more changes here
-	@Override
-	public String toString() {
-		return "Comment [id=" + id + ", title=" + title + ", content=" + content + ", ratings=" + ratings +
-				", user=" + user +
-				", museum=" + museum +
-				", date=" + date + "]";
-	}
+	// @Override
+	// public String toString() {
+	// 	return "Comment [id=" + id + ", title=" + title + ", content=" + content + ", ratings=" + ratings +
+	// 			", user=" + user +
+	// 			", museum=" + museum +
+	// 			", date=" + date + "]";
+	// }
 
 }
