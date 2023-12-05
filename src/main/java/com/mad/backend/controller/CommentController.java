@@ -19,10 +19,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.mad.backend.model.Comment;
-import com.mad.backend.model.User;
+//import com.mad.backend.model.User;
 import com.mad.backend.model.Museum;
 import com.mad.backend.repo.CommentRepository;
-import com.mad.backend.repo.UserRepository;
+//import com.mad.backend.repo.UserRepository;
 import com.mad.backend.repo.MuseumRepository;
 
 @RestController
@@ -30,8 +30,8 @@ import com.mad.backend.repo.MuseumRepository;
 public class CommentController {
     @Autowired
     private CommentRepository commentRepository;
-    @Autowired
-    private UserRepository userRepository;
+    // @Autowired
+    // private UserRepository userRepository;
     @Autowired
     private MuseumRepository museumRepository;
 
