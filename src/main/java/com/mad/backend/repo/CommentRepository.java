@@ -1,4 +1,4 @@
-package com.mad.backend.model;
+package com.mad.backend.repo;
 
 import java.util.List;
 

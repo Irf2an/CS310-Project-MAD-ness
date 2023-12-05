@@ -8,21 +8,21 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
 @Document
-public class Comment{
-    @Id
-    private String id;
-    private String title;
-    private String content;
-    private int ratings;
-    @DBRef
-    private User user;
-    @DBRef
-    private Museum museum;
-    private LocalDateTime date;
+public class Comment {
+	@Id
+	private String id;
+	private String title;
+	private String content;
+	private int ratings;
+	@DBRef
+	private User user;
+	@DBRef
+	private Museum museum;
+	private LocalDateTime date;
 
-    public Comment() {
+	public Comment() {
 	}
-	
+
 	public Comment(String title, String content, int ratings, User user, Museum museum) {
 		super();
 		this.title = title;
@@ -32,7 +32,7 @@ public class Comment{
 		this.museum = museum;
 	}
 
-    public String getId() {
+	public String getId() {
 		return id;
 	}
 
@@ -40,7 +40,7 @@ public class Comment{
 		this.id = id;
 	}
 
-    public String getTitle() {
+	public String getTitle() {
 		return title;
 	}
 
@@ -56,7 +56,7 @@ public class Comment{
 		this.content = content;
 	}
 
-    public int getRatings() {
+	public int getRatings() {
 		return ratings;
 	}
 
@@ -64,7 +64,7 @@ public class Comment{
 		this.ratings = ratings;
 	}
 
-     public User getUser() {
+	public User getUser() {
 		return user;
 	}
 
@@ -72,7 +72,7 @@ public class Comment{
 		this.user = user;
 	}
 
-     public Museum getMuseum() {
+	public Museum getMuseum() {
 		return museum;
 	}
 
@@ -80,7 +80,7 @@ public class Comment{
 		this.museum = museum;
 	}
 
-     public LocalDateTime getDate() {
+	public LocalDateTime getDate() {
 		return date;
 	}
 
@@ -88,14 +88,13 @@ public class Comment{
 		this.date = date;
 	}
 
-    // ------- might need to make more changes here
+	// ------- might need to make more changes here
 	@Override
 	public String toString() {
-		return "Comment [id=" + id + ", title=" + title + ", content=" + content +  + ", ratings=" + ratings + 
-         + ", user=" + user + 
-          + ", museum=" + museum + 
-           + ", date=" + date + "]";
+		return "Comment [id=" + id + ", title=" + title + ", content=" + content + ", ratings=" + ratings +
+				", user=" + user +
+				", museum=" + museum +
+				", date=" + date + "]";
 	}
-
 
 }
