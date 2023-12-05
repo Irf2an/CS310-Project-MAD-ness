@@ -1,6 +1,3 @@
-<<<<<<< Updated upstream
-package com.mad.backend.model;
-=======
 package com.mad.backend.model;
 
 import org.springframework.data.annotation.Id;
@@ -8,8 +5,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "museums")
 public class Museum {
-    @Id
-    private String id;
+    @Id private String id;
     private String name;
     private String description;
     private Address address;
@@ -21,8 +17,9 @@ public class Museum {
     public Museum() {
     }
 
-    public Museum(String name, String description, Address address, String image, String imagePath,
+    public Museum(String id, String name, String description, Address address, String image, String imagePath,
             String openingHours, double price) {
+        this.id = id;
         this.name = name;
         this.description = description;
         this.address = address;
@@ -102,6 +99,5 @@ public class Museum {
                 + ", image=" + image + ", imagePath=" + imagePath + ", openingHours=" + openingHours + ", price="
                 + price + "]";
     }
-
+    
 }
->>>>>>> Stashed changes
