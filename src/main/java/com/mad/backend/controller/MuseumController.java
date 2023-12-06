@@ -3,8 +3,8 @@ package com.mad.backend.controller;
 import java.util.List;
 import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import jakarta.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +23,24 @@ import com.mad.backend.repo.*;
 @RestController
 @RequestMapping("/museum")
 public class MuseumController {
+
+    @PostConstruct
+    public void init() {
+        if (museumRepository.count() == 0) {
+            System.out.println("Database is empty, initializing..");
+            Address a1 = new Address("1", "Stateville", "123 Main Street, Cityville", "12345");
+            Museum m1 = new Museum("National History Museum",
+                    "Explore the rich history of our world through fascinating exhibits and artifacts.",
+                    a1, "national_history_museum.jpg", "/images/",
+                    "Monday to Friday, 9 AM to 6 PM", 15.99);
+            museumRepository.save(m1);
+            // User u1 = new User("...");
+            // userRepository.save(u1);
+            // Comment c1 = new Comment("..", m1, u1);
+            // commentRepository.save(c1);
+            System.out.println("Museum and Address sample data is saved!");
+        }
+    }
 
     @Autowired
     private MuseumRepository museumRepository;
