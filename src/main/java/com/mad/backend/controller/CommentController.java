@@ -2,8 +2,7 @@ package com.mad.backend.controller;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
-// import javax.annotation.PostConstruct;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,110 +15,108 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import com.mad.backend.model.Comment;
-//import com.mad.backend.model.User;
-import com.mad.backend.model.Museum;
-import com.mad.backend.repo.CommentRepository;
-//import com.mad.backend.repo.UserRepository;
-import com.mad.backend.repo.MuseumRepository;
+import com.mad.backend.model.*;
+import com.mad.backend.repo.*;
 
 @RestController
 @RequestMapping("/comments")
 public class CommentController {
     @Autowired
     private CommentRepository commentRepository;
-    // @Autowired
-    // private UserRepository userRepository;
     @Autowired
     private MuseumRepository museumRepository;
-
-    // @PostConstruct
-    // public void init() {
-
-    // if (commentRepository.count() == 0) {
-    // System.out.println("Database is empty, initializing..");
-    // Musuem m1 = new Musuem("...");
-    // museumRepository.save(m1);
-
-    // User u1 = new User("...");
-    // userRepository.save(u1);
-
-    // Comment c1 = new Comment("..", m1, u1);
-    // commentRepository.save(c1);
-
-    // logger.info("Comment sample data is saved!");
-    // }
-    // }
 
     @GetMapping("/allComments")
     public List<Comment> getAllComments() {
         return commentRepository.findAll();
     }
 
+    // ---
     @GetMapping("/{museumId}")
     public List<Comment> getAllCommentsByMuseum(@PathVariable("museumId") String id) {
         Museum foundMuseum = museumRepository.findById(id).get();
-        List<Comment> museumCommentList = commentRepository.findByMuseum(foundMuseum);
-
-        return museumCommentList;
+        return commentRepository.findByMuseum(foundMuseum);
     }
 
+    // ---
     @GetMapping("/{ratings}")
     public List<Comment> searchByRatings(@PathVariable("ratings") int ratings) {
-        List<Comment> commentByRatingsList = commentRepository.findByRatings(ratings);
-
-        return commentByRatingsList;
+        return commentRepository.findByRatings(ratings);
     }
 
     @PostMapping("/save")
-    public Comment saveComment(@RequestBody Comment newComment) { // --- [TBD]
-
-        // ------- if wanna add a payload request class:
-        // @RequestBody CommentPayload payload
-        // private String userId;
-        // private String museumId;
-        // private String title;
-        // private String content;
-        // private int ratings;
-
-        // User user = userRepository.findById(payload.getUserId()).get();
-        // Museum museum = museumRepository.findById(payload.getMuseumId()).get();
-
-        // Comment commentToSave = new Comment(payload.getTitle(), payload.getContent(),
-        // payload.getRatings(), user, museum);
-        // commentToSave.setDate(LocalDateTime.now());
-
-        // --------- either one
-        // Comment commentSaved = commentRepository.save(commentToSave);
+    public ResponseEntity<MyResponse> saveComment(@RequestBody Comment newComment) {
+        newComment.setDate(LocalDateTime.now());
         Comment commentSaved = commentRepository.save(newComment);
 
-        System.out.println("=============> " + commentSaved.toString());
-        return commentSaved;
+        MyResponse response = new MyResponse();
+        response.setMessage("Comment successfully created!");
+        response.setData(commentSaved);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateComment(@PathVariable String id, @RequestBody Comment updatedComment) {
-        if (commentRepository.findById(id) == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Comment not found");
+    public ResponseEntity<MyResponse> updateComment(@PathVariable String id, @RequestBody Comment updatedComment) {
+        Optional<Comment> optionalComment = commentRepository.findById(id);
+
+        if (optionalComment.isPresent()) {
+            Comment existingComment = optionalComment.get();
+
+            // Update fields with non-null values from updatedMuseum
+            if (updatedComment.getTitle() != null) {
+                existingComment.setTitle(updatedComment.getTitle());
+            }
+            if (updatedComment.getContent() != null) {
+                existingComment.setContent(updatedComment.getContent());
+            }
+            if (updatedComment.getRatings() != 0) {
+                existingComment.setRatings(updatedComment.getRatings());
+            }
+            if (updatedComment.getUser() != null) {
+                existingComment.setUser(updatedComment.getUser());
+            }
+            if (updatedComment.getMuseum() != null) {
+                existingComment.setMuseum(updatedComment.getMuseum());
+            }
+            if (updatedComment.getDate() != null) {
+                existingComment.setDate(updatedComment.getDate());
+            }
+
+            Comment updated = commentRepository.save(existingComment);
+            MyResponse response = new MyResponse();
+            response.setMessage("Comment with ID: " + id + " has been successfully updated!");
+            response.setData(updated);
+
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } else {
+            MyResponse response = new MyResponse();
+            response.setMessage("Comment with ID: " + id + " not found!");
+
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
-
-        updatedComment.setId(id);
-        commentRepository.save(updatedComment);
-
-        return ResponseEntity.ok("Comment updated successfully");
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteComment(@PathVariable String id) {
-        if (commentRepository.findById(id) == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Comment not found");
+    public ResponseEntity<MyResponse> deleteComment(@PathVariable String id) {
+        Optional<Comment> optionalComment = commentRepository.findById(id);
+
+        if (optionalComment.isPresent()) {
+            museumRepository.deleteById(id);
+
+            MyResponse response = new MyResponse();
+            response.setMessage("Comment with ID " + id + " has been deleted!");
+
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+
+        } else {
+            MyResponse response = new MyResponse();
+            response.setMessage("Comment with ID " + id + " not found!");
+
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
-
-        commentRepository.deleteById(id);
-
-        return ResponseEntity.ok("Comment deleted successfully");
     }
 
 }
