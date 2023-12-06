@@ -110,6 +110,4 @@ public class Museum {
                 + openingHours + ", price=" + price + "]";
     }
 
-    
-
 }
