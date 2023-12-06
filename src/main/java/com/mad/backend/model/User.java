@@ -18,9 +18,8 @@ public class User {
     public User() {
     }
 
-    public User(String id, String username, String email, String firstName, String lastName, String password) {
+    public User(String username, String email, String firstName, String lastName, String password) {
         super();
-        this.id = id;
         this.username = username;
         this.email = email;
         this.firstName = firstName;

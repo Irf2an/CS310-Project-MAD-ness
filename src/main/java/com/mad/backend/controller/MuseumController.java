@@ -1,5 +1,6 @@
 package com.mad.backend.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,26 +25,64 @@ import com.mad.backend.repo.*;
 @RequestMapping("/museum")
 public class MuseumController {
 
+    @Autowired
+    private MuseumRepository museumRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private CommentRepository commentRepository;
+
     @PostConstruct
     public void init() {
         if (museumRepository.count() == 0) {
             System.out.println("Database is empty, initializing..");
+
+            // ------------ Adding Address and Museum ------------
             Address a1 = new Address("1", "Stateville", "123 Main Street, Cityville", "12345");
             Museum m1 = new Museum("National History Museum",
                     "Explore the rich history of our world through fascinating exhibits and artifacts.",
                     a1, "national_history_museum.jpg", "/images/",
                     "Monday to Friday, 9 AM to 6 PM", 15.99);
+            Address a2 = new Address("2", "State of Art", "456 Art Avenue, Creativity City", "56789");
+            Museum m2 = new Museum("Art Gallery of Modern Masters",
+                    "Immerse yourself in the world of modern art, featuring masterpieces from renowned artists.",
+                    a2, "art_gallery.jpg", "/images/",
+                    "Tuesday to Saturday, 10 AM to 8 PM", 20.50);
+            Address a3 = new Address("3", "Cosmos State", "789 Galaxy Lane, Space City", "67890");
+            Museum m3 = new Museum("Space Discovery Center",
+                    "Embark on a journey to the stars and beyond, exploring the wonders of our universe.",
+                    a3, "space_discovery_center.jpg", "/images/",
+                    "Wednesday to Sunday, 11 AM to 7 PM", 18.75);
+            Address a4 = new Address("4", "Paleoland", "101 Prehistoric Street, Fossilville", "54321");
+            Museum m4 = new Museum("Dinosaur World Museum",
+                    "Step back in time to the age of dinosaurs, with lifelike exhibits and fossil collections.",
+                    a4, "dinosaur_world_museum.jpg", "/images/",
+                    "Thursday to Monday, 10:30 AM to 5:30 PM", 14.99);
+            Address a5 = new Address("5", "Innovation State", "202 Future Avenue, Tech City", "11223");
+            Museum m5 = new Museum("Technology Innovations Hub",
+                    "Discover the latest in technology and innovation through interactive displays and workshops.",
+                    a5, "technology_innovations_hub.jpg", "/images/",
+                    "Monday to Saturday, 10 AM to 6 PM", 22.00);
+
             museumRepository.save(m1);
-            // User u1 = new User("...");
-            // userRepository.save(u1);
-            // Comment c1 = new Comment("..", m1, u1);
-            // commentRepository.save(c1);
-            System.out.println("Museum and Address sample data is saved!");
+            museumRepository.save(m2);
+            museumRepository.save(m3);
+            museumRepository.save(m4);
+            museumRepository.save(m5);
+
+            // ------------ Adding User ------------
+            User u1 = new User("john123", "john123@test.com", "john", "doe", "12345");
+            userRepository.save(u1);
+
+            // ------------ Adding Comment ------------
+            Comment c1 = new Comment("Highly Recommended",
+                    "Immersive exhibits that seamlessly blend art, history, and technology, making each visit to this museum a captivating journey through time and culture. From interactive installations to thought-provoking artifacts, thiscultural haven sparks curiosity and fosters a deep appreciation for the richness of our heritage",
+                    4,
+                    u1, m1, LocalDateTime.now());
+            commentRepository.save(c1);
+            System.out.println("All sample data is saved!");
         }
     }
-
-    @Autowired
-    private MuseumRepository museumRepository;
 
     @GetMapping("/allMuseums")
     public List<Museum> getAllMuseums() {
