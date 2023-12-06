@@ -104,7 +104,7 @@ public class CommentController {
         Optional<Comment> optionalComment = commentRepository.findById(id);
 
         if (optionalComment.isPresent()) {
-            museumRepository.deleteById(id);
+            commentRepository.deleteById(id);
 
             MyResponse response = new MyResponse();
             response.setMessage("Comment with ID " + id + " has been deleted!");
