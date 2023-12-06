@@ -28,10 +28,9 @@ public class MuseumController {
     public void init() {
         if (museumRepository.count() == 0) {
             System.out.println("Database is empty, initializing..");
-            Address a1 = new Address("1", "Stateville", "123 Main Street, Cityville", "12345");
             Museum m1 = new Museum("National History Museum",
                     "Explore the rich history of our world through fascinating exhibits and artifacts.",
-                    a1, "national_history_museum.jpg", "/images/",
+                    "Stateville", "12345", "national_history_museum.jpg", "/images/",
                     "Monday to Friday, 9 AM to 6 PM", 15.99);
             museumRepository.save(m1);
             // User u1 = new User("...");
@@ -52,18 +51,18 @@ public class MuseumController {
 
     }
 
-    @PostMapping("/search")
-    public List<Museum> searchBooks(@RequestBody Museum museum) {
+    @PostMapping("/{name}")
+    public List<Museum> searchMuseums(@PathVariable("name") String name) {
 
-        List<Museum> museums = museumRepository.findByName(museum.getName());
+        List<Museum> museums = museumRepository.findByName(name);
 
         return museums;
     }
 
-    @GetMapping("/{address}")
-    public List<Museum> getAllMuseumsByAddress(Address address) {
+    @GetMapping("/{city}")
+    public List<Museum> getAllMuseumsByCity(@PathVariable("city") String city) {
 
-        List<Museum> museums = museumRepository.findByAddress(address);
+        List<Museum> museums = museumRepository.findByCity(city);
         return museums;
     }
 
@@ -76,7 +75,7 @@ public class MuseumController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Museum> updateMuseum(@PathVariable String id, @RequestBody Museum updatedMuseum) {
+    public ResponseEntity<Museum> updateMuseum(@PathVariable("id") String id, @RequestBody Museum updatedMuseum) {
         Optional<Museum> optionalMuseum = museumRepository.findById(id);
 
         if (optionalMuseum.isPresent()) {
@@ -89,8 +88,12 @@ public class MuseumController {
             if (updatedMuseum.getDescription() != null) {
                 existingMuseum.setDescription(updatedMuseum.getDescription());
             }
-            if (updatedMuseum.getAddress() != null) {
-                existingMuseum.setAddress(updatedMuseum.getAddress());
+            if (updatedMuseum.getCity() != null) {
+                existingMuseum.setCity(updatedMuseum.getCity());
+            }
+            if (updatedMuseum.getPostalCode() != null) {
+                existingMuseum.setPostalCode(updatedMuseum.getPostalCode());
+                ;
             }
             if (updatedMuseum.getImage() != null) {
                 existingMuseum.setImage(updatedMuseum.getImage());
@@ -113,7 +116,7 @@ public class MuseumController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> removeMuseum(@PathVariable String id) {
+    public ResponseEntity<String> removeMuseum(@PathVariable("id") String id) {
         Optional<Museum> optionalMuseum = museumRepository.findById(id);
 
         if (optionalMuseum.isPresent()) {
