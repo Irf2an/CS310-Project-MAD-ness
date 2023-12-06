@@ -9,7 +9,8 @@ public class Museum {
     private String id;
     private String name;
     private String description;
-    private Address address;
+    private String city;
+    private String postalCode;
     private String image;
     private String imagePath;
     private String openingHours;
@@ -18,11 +19,12 @@ public class Museum {
     public Museum() {
     }
 
-    public Museum(String name, String description, Address address, String image, String imagePath,
+    public Museum(String name, String description, String city, String postalCode, String image, String imagePath,
             String openingHours, double price) {
         this.name = name;
         this.description = description;
-        this.address = address;
+        this.city = city;
+        this.postalCode = postalCode;
         this.image = image;
         this.imagePath = imagePath;
         this.openingHours = openingHours;
@@ -53,12 +55,20 @@ public class Museum {
         this.description = description;
     }
 
-    public Address getAddress() {
-        return address;
+    public String getCity() {
+        return city;
     }
 
-    public void setAddress(Address address) {
-        this.address = address;
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getPostalCode() {
+        return postalCode;
+    }
+
+    public void setPostalCode(String postalCode) {
+        this.postalCode = postalCode;
     }
 
     public String getImage() {
@@ -95,9 +105,11 @@ public class Museum {
 
     @Override
     public String toString() {
-        return "Museum [id=" + id + ", name=" + name + ", description=" + description + ", address=" + address
-                + ", image=" + image + ", imagePath=" + imagePath + ", openingHours=" + openingHours + ", price="
-                + price + "]";
+        return "Museum [id=" + id + ", name=" + name + ", description=" + description + ", city=" + city
+                + ", postalCode=" + postalCode + ", image=" + image + ", imagePath=" + imagePath + ", openingHours="
+                + openingHours + ", price=" + price + "]";
     }
+
+    
 
 }
