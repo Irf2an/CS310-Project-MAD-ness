@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mad.backend.model.User;
-import com.mad.backend.repo.UserRepository;
+import com.mad.backend.model.*;
+import com.mad.backend.repo.*;
 
 @RestController
 @RequestMapping("/users")
@@ -39,13 +39,18 @@ public class UserController {
     }
 
     @PostMapping("/save")
-    public User saveUser(@RequestBody User user) {
+    public ResponseEntity<MyResponse> saveUser(@RequestBody User user) {
         User userSaved = userRepository.save(user);
-        return userSaved;
+
+        MyResponse response = new MyResponse();
+        response.setMessage("User successfully created!");
+        response.setData(userSaved);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable String id, @RequestBody User updatedUser) {
+    public ResponseEntity<MyResponse> updateUser(@PathVariable String id, @RequestBody User updatedUser) {
         Optional<User> optionalUser = userRepository.findById(id);
 
         if (optionalUser.isPresent()) {
@@ -69,21 +74,38 @@ public class UserController {
             }
 
             User updated = userRepository.save(existingUser);
-            return ResponseEntity.ok(updated);
+
+            MyResponse response = new MyResponse();
+            response.setMessage("User with ID: " + id + " has been successfully updated!");
+            response.setData(updated);
+
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+
         } else {
-            return ResponseEntity.notFound().build();
+            MyResponse response = new MyResponse();
+            response.setMessage("User with ID: " + id + " not found!");
+
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> removeUser(@PathVariable String id) {
+    public ResponseEntity<MyResponse> removeUser(@PathVariable String id) {
         Optional<User> optionalUser = userRepository.findById(id);
 
         if (optionalUser.isPresent()) {
             userRepository.deleteById(id);
-            return ResponseEntity.ok("User with ID " + id + " has been deleted.");
+
+            MyResponse response = new MyResponse();
+            response.setMessage("User with ID " + id + " has been deleted!");
+
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with ID " + id + " not found.");
+            MyResponse response = new MyResponse();
+            response.setMessage("User with ID " + id + " not found!");
+
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
     }
 }

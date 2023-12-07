@@ -2,7 +2,6 @@ package com.mad.backend.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
 @Document
 public class User {
@@ -73,5 +72,11 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @Override
+    public String toString() {
+        return "User [id=" + id + ", username=" + username + ", firstName=" + firstName + ", lastName=" + lastName
+                + ", email=" + email + "]";
     }
 }

@@ -22,7 +22,7 @@ import com.mad.backend.model.*;
 import com.mad.backend.repo.*;
 
 @RestController
-@RequestMapping("/museum")
+@RequestMapping("/museums")
 public class MuseumController {
 
     @Autowired
@@ -37,31 +37,26 @@ public class MuseumController {
         if (museumRepository.count() == 0) {
             System.out.println("Database is empty, initializing..");
 
-            // ------------ Adding Address and Museum ------------
-            Address a1 = new Address("1", "Stateville", "123 Main Street, Cityville", "12345");
+            // ------------ Adding Museum ------------
             Museum m1 = new Museum("National History Museum",
                     "Explore the rich history of our world through fascinating exhibits and artifacts.",
-                    a1, "national_history_museum.jpg", "/images/",
+                    "Stateville", "12345", "national_history_museum.jpg", "/images/",
                     "Monday to Friday, 9 AM to 6 PM", 15.99);
-            Address a2 = new Address("2", "State of Art", "456 Art Avenue, Creativity City", "56789");
             Museum m2 = new Museum("Art Gallery of Modern Masters",
                     "Immerse yourself in the world of modern art, featuring masterpieces from renowned artists.",
-                    a2, "art_gallery.jpg", "/images/",
+                    "State of Art", "56789", "art_gallery.jpg", "/images/",
                     "Tuesday to Saturday, 10 AM to 8 PM", 20.50);
-            Address a3 = new Address("3", "Cosmos State", "789 Galaxy Lane, Space City", "67890");
             Museum m3 = new Museum("Space Discovery Center",
                     "Embark on a journey to the stars and beyond, exploring the wonders of our universe.",
-                    a3, "space_discovery_center.jpg", "/images/",
+                    "Cosmos State", "67890", "space_discovery_center.jpg", "/images/",
                     "Wednesday to Sunday, 11 AM to 7 PM", 18.75);
-            Address a4 = new Address("4", "Paleoland", "101 Prehistoric Street, Fossilville", "54321");
             Museum m4 = new Museum("Dinosaur World Museum",
                     "Step back in time to the age of dinosaurs, with lifelike exhibits and fossil collections.",
-                    a4, "dinosaur_world_museum.jpg", "/images/",
+                    "Stateville", "54321", "dinosaur_world_museum.jpg", "/images/",
                     "Thursday to Monday, 10:30 AM to 5:30 PM", 14.99);
-            Address a5 = new Address("5", "Innovation State", "202 Future Avenue, Tech City", "11223");
             Museum m5 = new Museum("Technology Innovations Hub",
                     "Discover the latest in technology and innovation through interactive displays and workshops.",
-                    a5, "technology_innovations_hub.jpg", "/images/",
+                    "Innovation State", "11223", "technology_innovations_hub.jpg", "/images/",
                     "Monday to Saturday, 10 AM to 6 PM", 22.00);
 
             museumRepository.save(m1);
@@ -80,42 +75,41 @@ public class MuseumController {
                     4,
                     u1, m1, LocalDateTime.now());
             commentRepository.save(c1);
+
             System.out.println("All sample data is saved!");
         }
     }
 
     @GetMapping("/allMuseums")
     public List<Museum> getAllMuseums() {
-
         return museumRepository.findAll();
-
     }
 
-    @PostMapping("/search")
-    public List<Museum> searchBooks(@RequestBody Museum museum) {
-
-        List<Museum> museums = museumRepository.findByName(museum.getName());
-
-        return museums;
+    // ---
+    @GetMapping("/{name}")
+    public Museum searchMuseums(@PathVariable("name") String name) {
+        return museumRepository.findByName(name);
     }
 
-    @GetMapping("/{address}")
-    public List<Museum> getAllMuseumsByAddress(Address address) {
-
-        List<Museum> museums = museumRepository.findByAddress(address);
-        return museums;
+    // ---
+    @GetMapping("/{city}")
+    public List<Museum> getAllMuseumsByCity(@PathVariable("city") String city) {
+        return museumRepository.findByCity(city);
     }
 
     @PostMapping("/save")
-    public Museum saveMuseum(@RequestBody Museum museum) {
-
+    public ResponseEntity<MyResponse> saveMuseum(@RequestBody Museum museum) {
         Museum museumSaved = museumRepository.save(museum);
 
-        return museumSaved;
+        MyResponse response = new MyResponse();
+        response.setMessage("Museum successfully created!");
+        response.setData(museumSaved);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Museum> updateMuseum(@PathVariable String id, @RequestBody Museum updatedMuseum) {
+    public ResponseEntity<MyResponse> updateMuseum(@PathVariable("id") String id, @RequestBody Museum updatedMuseum) {
         Optional<Museum> optionalMuseum = museumRepository.findById(id);
 
         if (optionalMuseum.isPresent()) {
@@ -128,8 +122,12 @@ public class MuseumController {
             if (updatedMuseum.getDescription() != null) {
                 existingMuseum.setDescription(updatedMuseum.getDescription());
             }
-            if (updatedMuseum.getAddress() != null) {
-                existingMuseum.setAddress(updatedMuseum.getAddress());
+            if (updatedMuseum.getCity() != null) {
+                existingMuseum.setCity(updatedMuseum.getCity());
+            }
+            if (updatedMuseum.getPostalCode() != null) {
+                existingMuseum.setPostalCode(updatedMuseum.getPostalCode());
+                ;
             }
             if (updatedMuseum.getImage() != null) {
                 existingMuseum.setImage(updatedMuseum.getImage());
@@ -145,21 +143,36 @@ public class MuseumController {
             }
 
             Museum updated = museumRepository.save(existingMuseum);
-            return ResponseEntity.ok(updated);
+            MyResponse response = new MyResponse();
+            response.setMessage("Museum with ID: " + id + " has been successfully updated!");
+            response.setData(updated);
+
+            return ResponseEntity.status(HttpStatus.OK).body(response);
         } else {
-            return ResponseEntity.notFound().build();
+            MyResponse response = new MyResponse();
+            response.setMessage("Museum with ID: " + id + " not found!");
+
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> removeMuseum(@PathVariable String id) {
+    public ResponseEntity<MyResponse> removeMuseum(@PathVariable("id") String id) {
         Optional<Museum> optionalMuseum = museumRepository.findById(id);
 
         if (optionalMuseum.isPresent()) {
             museumRepository.deleteById(id);
-            return ResponseEntity.ok("Museum with ID " + id + " has been deleted.");
+
+            MyResponse response = new MyResponse();
+            response.setMessage("Museum with ID " + id + " has been deleted!");
+
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Museum with ID " + id + " not found.");
+            MyResponse response = new MyResponse();
+            response.setMessage("Museum with ID " + id + " not found!");
+
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
     }
 
